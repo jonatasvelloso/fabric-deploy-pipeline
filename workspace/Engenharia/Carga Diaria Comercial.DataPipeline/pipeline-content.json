@@ -1,0 +1,60 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "name": "Ingestao Vendas",
+        "type": "TridentNotebook",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 300
+        },
+        "typeProperties": {
+          "notebookId": "e4b8c2a6-1d9f-4b3e-8a7c-6f2d1b9e4a04",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "DATA_REFERENCIA": {
+              "value": {
+                "value": "@pipeline().parameters.data_referencia",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "name": "Transformacao Vendas",
+        "type": "TridentNotebook",
+        "dependsOn": [
+          {
+            "activity": "Ingestao Vendas",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 300
+        },
+        "typeProperties": {
+          "notebookId": "f1a7d3c9-5b2e-4f8a-9c6d-2e1b7a4f3c05",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        }
+      }
+    ],
+    "parameters": {
+      "data_referencia": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "ambiente": {
+        "type": "string",
+        "defaultValue": "dev"
+      }
+    }
+  }
+}

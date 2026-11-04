@@ -1,0 +1,39 @@
+# Valores que mudam entre ambientes.
+#
+# Os arquivos em workspace/ são exportados do workspace de DEV, então o
+# `find` é sempre o valor de DEV. IDs estruturais (logicalId, workspace,
+# modelo do relatório) são resolvidos pelo pyfabricops e NÃO entram aqui.
+#
+# Toda regra precisa de um valor para cada ambiente de environments.yml
+# (a validação do PR garante). `$ENV:NOME` lê de um secret do GitHub.
+
+find_replace:
+  - description: Endpoint SQL do Lakehouse no modelo Direct Lake
+    find: comercial-dev.datawarehouse.fabric.example.com
+    replace:
+      dev: comercial-dev.datawarehouse.fabric.example.com
+      prd: $ENV:FABRIC_SQL_ENDPOINT
+    item_types: [SemanticModel]
+    file_pattern: expressions\.tmdl$
+
+  - description: URL da API de vendas consumida na ingestão
+    find: https://api-dev.vendas.example.com
+    replace:
+      dev: https://api-dev.vendas.example.com
+      prd: https://api.vendas.example.com
+    item_types: [Notebook]
+    item_names: [Ingestao Vendas]
+
+  - description: Parâmetro AMBIENTE dos notebooks
+    find: AMBIENTE = "dev"
+    replace:
+      dev: AMBIENTE = "dev"
+      prd: AMBIENTE = "prd"
+    item_types: [Notebook]
+
+  - description: Parâmetro ambiente do pipeline
+    find: '"defaultValue": "dev"'
+    replace:
+      dev: '"defaultValue": "dev"'
+      prd: '"defaultValue": "prd"'
+    item_types: [DataPipeline]

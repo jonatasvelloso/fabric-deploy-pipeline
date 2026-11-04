@@ -1,0 +1,16 @@
+# Ambientes de destino.
+#
+# workspace: nome ou ID do workspace. `$ENV:NOME` lê de uma variável de
+# ambiente, que no GitHub vem do secret do Environment correspondente.
+# Assim nenhum ID de workspace fica no repositório.
+
+environments:
+  dev:
+    workspace: $ENV:FABRIC_WORKSPACE
+    protected: false
+    allow_deletions: true      # item apagado no Git pode sair do DEV
+
+  prd:
+    workspace: $ENV:FABRIC_WORKSPACE
+    protected: true            # deploy completo exige confirmação explícita
+    allow_deletions: false     # exclusão em produção é sempre manual

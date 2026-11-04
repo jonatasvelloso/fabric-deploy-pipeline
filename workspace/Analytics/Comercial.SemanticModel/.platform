@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Comercial",
+    "description": "Modelo Direct Lake da área comercial"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d5c1b7e3-9a4f-4d2c-8b6e-4a9f1c3d7b07"
+  }
+}

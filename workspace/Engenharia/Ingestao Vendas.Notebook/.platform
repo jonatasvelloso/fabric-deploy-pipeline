@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "Ingestao Vendas",
+    "description": "API de vendas -> camada bronze"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "e4b8c2a6-1d9f-4b3e-8a7c-6f2d1b9e4a04"
+  }
+}

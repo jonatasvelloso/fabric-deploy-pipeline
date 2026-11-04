@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataPipeline",
+    "displayName": "Carga Diaria Comercial",
+    "description": "Orquestra ingestão e transformação diárias"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "b9e2f6a4-3c7d-4e1b-8f5a-7d3c9b2e6f06"
+  }
+}

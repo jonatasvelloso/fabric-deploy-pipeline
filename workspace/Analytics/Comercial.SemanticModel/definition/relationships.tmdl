@@ -1,0 +1,3 @@
+relationship fato_vendas_dim_produto
+	fromColumn: fato_vendas.produto_id
+	toColumn: dim_produto.produto_id

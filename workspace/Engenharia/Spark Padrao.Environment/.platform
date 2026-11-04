@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Environment",
+    "displayName": "Spark Padrao",
+    "description": "Bibliotecas e configuração Spark dos notebooks"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a2c9e4d7-8b1f-4c3a-9e6d-5f2b7a1c3d02"
+  }
+}

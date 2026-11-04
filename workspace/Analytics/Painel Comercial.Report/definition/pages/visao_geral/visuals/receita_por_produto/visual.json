@@ -1,0 +1,52 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.3.0/schema.json",
+  "name": "receita_por_produto",
+  "position": {
+    "x": 40,
+    "y": 40,
+    "z": 0,
+    "width": 760,
+    "height": 420
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_produto"
+                    }
+                  },
+                  "Property": "produto_nome"
+                }
+              },
+              "queryRef": "dim_produto.produto_nome"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fato_vendas"
+                    }
+                  },
+                  "Property": "Receita"
+                }
+              },
+              "queryRef": "fato_vendas.Receita"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

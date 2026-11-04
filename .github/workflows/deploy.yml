@@ -1,0 +1,80 @@
+name: Deploy Fabric
+
+# develop -> workspace de DEV, main -> workspace de PRD.
+# O Environment "PRD" do GitHub deve ter Required reviewers: o job só
+# começa depois da aprovação humana.
+
+on:
+  push:
+    branches: [develop, main]
+    paths: ["workspace/**", "config/**"]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "selective = só o que mudou desde o último deploy; full = tudo"
+        type: choice
+        options: [selective, full]
+        default: selective
+      item_types:
+        description: "Restringe a tipos (ex.: Notebook,Report). Vazio = todos"
+        type: string
+        default: ""
+      allow_deletions:
+        description: "Excluir do workspace itens removidos do Git (só onde o ambiente permite)"
+        type: boolean
+        default: false
+      force_full:
+        description: "Confirma deploy completo em ambiente protegido"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy em ${{ github.ref_name == 'main' && 'PRD' || 'DEV' }}
+    # Só roda depois de configurado: variável de repositório FABRIC_DEPLOY_ENABLED=true
+    # (Settings -> Secrets and variables -> Actions -> Variables).
+    if: vars.FABRIC_DEPLOY_ENABLED == 'true' && (github.ref_name == 'main' || github.ref_name == 'develop')
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'PRD' || 'DEV' }}
+    # Nunca dois deploys no mesmo ambiente ao mesmo tempo; o próximo espera.
+    concurrency:
+      group: deploy-${{ github.ref_name }}
+      cancel-in-progress: false
+    env:
+      TARGET: ${{ github.ref_name == 'main' && 'prd' || 'dev' }}
+      FAB_TENANT_ID: ${{ secrets.FAB_TENANT_ID }}
+      FAB_CLIENT_ID: ${{ secrets.FAB_CLIENT_ID }}
+      FAB_CLIENT_SECRET: ${{ secrets.FAB_CLIENT_SECRET }}
+      FABRIC_WORKSPACE: ${{ secrets.FABRIC_WORKSPACE }}
+      FABRIC_SQL_ENDPOINT: ${{ secrets.FABRIC_SQL_ENDPOINT }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # o modo seletivo compara com o commit anterior
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+
+      - name: Montar argumentos
+        id: args
+        run: |
+          ARGS="--env $TARGET --mode ${{ inputs.mode || 'selective' }}"
+          # push: compara com o commit anterior da branch; manual: com o pai do HEAD
+          BASE="${{ github.event.before }}"
+          [ -z "$BASE" ] && BASE="$(git rev-parse HEAD~1)"
+          ARGS="$ARGS --base-ref $BASE"
+          [ -n "${{ inputs.item_types }}" ] && ARGS="$ARGS --item-types ${{ inputs.item_types }}"
+          [ "${{ inputs.allow_deletions }}" = "true" ] && ARGS="$ARGS --allow-deletions"
+          [ "${{ inputs.force_full }}" = "true" ] && ARGS="$ARGS --force-full"
+          echo "value=$ARGS" >> "$GITHUB_OUTPUT"
+
+      - name: Plano
+        run: fabric-deploy plan ${{ steps.args.outputs.value }}
+
+      - name: Deploy
+        run: fabric-deploy deploy ${{ steps.args.outputs.value }}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Lakehouse",
+    "displayName": "Comercial",
+    "description": "Camadas bronze, silver e gold da área comercial"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "6b1f6a3e-2c4d-4e8a-9f1b-3a7c5d2e8f01"
+  }
+}
